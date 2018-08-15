@@ -5,6 +5,8 @@
     <LangVersion>latest</LangVersion>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PackageType>MSBuildSdk</PackageType>
+    <Description>Generates assembly attributes ("AssemblyInfo.cs") based on MSBuild properties for classic .NET project types (classic ASP.NET, WPF, WinForms, Console, ...) similar to .NET Core and .NET Standard project.</Description>
+    <PackageTags>MSBuildSdk AssemblyInfo</PackageTags>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
