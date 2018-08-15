@@ -11,6 +11,6 @@ Use this in your favourite project by [referencing it as MSBuild Project SDK](ht
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Sdk Name="DasMulli.AssemblyInfoGeneration.Sdk" Version="1.0.0-beta001" />
+  <Sdk Name="DasMulli.AssemblyInfoGeneration.Sdk" Version="1.0.0-rc-0001" />
 …
 ```
