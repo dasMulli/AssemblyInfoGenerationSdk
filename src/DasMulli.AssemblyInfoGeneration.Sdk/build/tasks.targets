@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_AsemblyInfoGenerationSdkTfm Condition="'$(MSBuildRuntimeType)' == 'Core'">netcoreapp2.0</_AsemblyInfoGenerationSdkTfm>
+    <_AsemblyInfoGenerationSdkTfm Condition="'$(MSBuildRuntimeType)' != 'Core'">net46</_AsemblyInfoGenerationSdkTfm>
+    <_AsemblyInfoGenerationSdkAssembly>$(MSBuildThisFileDirectory)$(_AsemblyInfoGenerationSdkTfm)\DasMulli.AssemblyInfoGeneration.Sdk.dll</_AsemblyInfoGenerationSdkAssembly>
+    <_AsemblyInfoGenerationSdkAssembly Condition="!Exists($(_AsemblyInfoGenerationSdkAssembly))">$(MSBuildThisFileDirectory)..\bin\Debug\$(_AsemblyInfoGenerationSdkTfm)\DasMulli.AssemblyInfoGeneration.Sdk.dll</_AsemblyInfoGenerationSdkAssembly>
+  </PropertyGroup>
+  
+  <UsingTask TaskName="DasMulli.AssemblyInfoGeneration.Sdk.GetAssemblyVersion" AssemblyFile="$(_AsemblyInfoGenerationSdkAssembly)" />
+
+</Project>

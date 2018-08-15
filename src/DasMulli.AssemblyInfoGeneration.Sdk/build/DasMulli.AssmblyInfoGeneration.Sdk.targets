@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)tasks.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)DefaultAssemblyInfo.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+  <Import Project="$(MSBuildThisFileDirectory)GenerateAssemblyInfo.targets" Condition="'$(UsingMicrosoftNETSdk)' != 'true'" />
+
+</Project>
