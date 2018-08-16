@@ -23,13 +23,13 @@
     <Content Include="..\TestAssets\**" Exclude="**\.vs\**;**\bin\**;**\obj\**" LinkBase="TestAssets\" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <Target Name="IncludePackageVersionInMetadata" DependsOnTargets="GetNuGetPackageVersion" AfterTargets="GetAssemblyAttributes">
-    <ItemGroup>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-        <_Parameter1>NuGetPackageVersion</_Parameter1>
-        <_Parameter2>$(PackageVersion)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <Content Update="..\TestAssets\WpfApp\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Content>
+    <Content Update="..\TestAssets\WpfApp\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Content>
+  </ItemGroup>
 
 </Project>

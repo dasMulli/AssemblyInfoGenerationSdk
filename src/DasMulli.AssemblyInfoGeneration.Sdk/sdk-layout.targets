@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <SdkBaseDir>Sdks\$(AssemblyName)\</SdkBaseDir>
   </PropertyGroup>
 
   <!--
@@ -10,13 +11,7 @@
   to get the prepared SDK layout as copy-to-output-directory items over a P2P reference
   -->
 
-  <Target Name="DetermineSdkBaseDir" DependsOnTargets="GetNuGetPackageVersion">
-    <PropertyGroup>
-      <SdkBaseDir>Sdks\$(AssemblyName)\$(PackageVersion)\</SdkBaseDir>
-    </PropertyGroup>
-    </Target>
-
-  <Target Name="IncludeSdkLayoutInCopyToOutputDirectoryItems" BeforeTargets="GetCopyToOutputDirectoryItems" DependsOnTargets="DetermineSdkBaseDir" Condition="'$(ReferencingSdkLayout)' == 'true'">
+  <Target Name="IncludeSdkLayoutInCopyToOutputDirectoryItems" BeforeTargets="GetCopyToOutputDirectoryItems" Condition="'$(ReferencingSdkLayout)' == 'true'">
     <ItemGroup>
       <_SdkLayoutItem Include="@(None)" Condition="'%(None.Pack)' == 'true'" TargetPath="$(SdkBaseDir)%(None.PackagePath)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DasMulli.AssemblyInfoGeneration.Tests.Utils;
 using FluentAssertions;
 using Xunit;
 using Microsoft.Build.Locator;
@@ -19,10 +20,12 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
         [InlineData(TestAsset.WpfApp)]
         public void ItShallCreateAssemblyAttributes(TestAsset asset)
         {
-            var assets = TestAssetsManager.CloneAssetsForTest(asset);
+            var (assets, projectFile) = TestAssetsManager.CloneAssetsForTest(asset);
             try
             {
-                var startInfo = CreateMsBuildInvocation(assets, "-p:Version=1.2.3-beta.005 -p:FileVersion=1.2.3.4 -p:AssemblyVersion=1.2.3.0");
+                RemoveSdkVersionFromProjectFile(projectFile).Should().BeTrue();
+
+                var startInfo = CreateMsBuildInvocation(assets, $"-p:Version=1.2.3-beta.005 -p:FileVersion=1.2.3.4 -p:AssemblyVersion=1.2.3.0 -bl:..\\{nameof(ItShallCreateAssemblyAttributes)}_{asset}.binlog");
                 var process = Process.Start(startInfo);
                 Assert.NotNull(process);
                 process.WaitForExit(30_000).Should().BeTrue();
@@ -46,14 +49,19 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
         private static ProcessStartInfo CreateMsBuildInvocation(DirectoryInfo assets, string arguments)
         {
             var msbuild = ToolLocator.LocateMSBuildExecutable();
-            return new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
-                EnvironmentVariables = { { "MSBuildSdkPath", Path.Combine(AppContext.BaseDirectory, "Sdks") } },
                 FileName = msbuild,
-                Arguments = "-nr:false " + arguments,
+                Arguments = "-nr:false -m:1 " + arguments,
                 WorkingDirectory = assets.FullName,
                 UseShellExecute = false
             };
+            startInfo.EnvironmentVariables["MSBuildSDKsPath"] = Path.Combine(AppContext.BaseDirectory, "Sdks");
+            return startInfo;
         }
+
+        private static bool RemoveSdkVersionFromProjectFile(FileInfo projectFile) => new XmlPoke(projectFile.FullName, "/x:Project/x:Sdk[@Name=\"DasMulli.AssemblyInfoGeneration.Sdk\"]/@Version", "",
+                "<Namespace Prefix='x' Uri='http://schemas.microsoft.com/developer/msbuild/2003' />")
+            .Execute();
     }
 }

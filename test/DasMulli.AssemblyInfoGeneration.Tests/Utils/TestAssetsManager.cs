@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace DasMulli.AssemblyInfoGeneration.Tests
 {
@@ -9,7 +10,7 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
     {
         private static readonly string TestAssetsBasePath = Path.Combine(AppContext.BaseDirectory, "TestAssets");
 
-        public static DirectoryInfo CloneAssetsForTest(TestAsset asset, [CallerMemberName] string callerMemberName = default)
+        public static (DirectoryInfo, FileInfo) CloneAssetsForTest(TestAsset asset, [CallerMemberName] string callerMemberName = default)
         {
             if (!Enum.IsDefined(typeof(TestAsset), asset))
             {
@@ -28,7 +29,9 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
 
             CopyDirectory(sourceDir, targetDir);
 
-            return targetDir;
+            var projectFile = targetDir.EnumerateFiles("*.*proj", SearchOption.TopDirectoryOnly).FirstOrDefault() ?? throw new Exception($"Couldn't find project file for test asset {asset}.");
+
+            return (targetDir, projectFile);
         }
         
         private static void CopyDirectory(DirectoryInfo source, DirectoryInfo target)
@@ -50,6 +53,7 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
                 CopyDirectory(diSourceSubDir, nextTargetSubDir);
             }
         }
+
 
     }
 }
