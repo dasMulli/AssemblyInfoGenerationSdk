@@ -5,6 +5,7 @@ branches:
   only:
   - master
 image: Visual Studio 2017
+configuration: Release
 before_build:
 - cmd:  >-
     dotnet tool install --tool-path . nbgv
