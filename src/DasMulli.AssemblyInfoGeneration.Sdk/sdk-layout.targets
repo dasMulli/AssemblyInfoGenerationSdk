@@ -1,0 +1,58 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <!--
+  These targets allow referencing either the outer or inner build with addidtional property
+  ReferencingSdkLayout=true
+  to get the prepared SDK layout as copy-to-output-directory items over a P2P reference
+  -->
+
+  <Target Name="DetermineSdkBaseDir" DependsOnTargets="GetNuGetPackageVersion">
+    <PropertyGroup>
+      <SdkBaseDir>Sdks\$(AssemblyName)\$(PackageVersion)\</SdkBaseDir>
+    </PropertyGroup>
+    </Target>
+
+  <Target Name="IncludeSdkLayoutInCopyToOutputDirectoryItems" BeforeTargets="GetCopyToOutputDirectoryItems" DependsOnTargets="DetermineSdkBaseDir" Condition="'$(ReferencingSdkLayout)' == 'true'">
+    <ItemGroup>
+      <_SdkLayoutItem Include="@(None)" Condition="'%(None.Pack)' == 'true'" TargetPath="$(SdkBaseDir)%(None.PackagePath)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    <ItemGroup>
+      <AllItemsFullPathWithTargetPath Include="@(_SdkLayoutItem->'%(FullPath)')"/>
+    </ItemGroup>
+    <ItemGroup>
+      <_SdkTargetFramework Include="$(TargetFrameworks)"/>
+      <_SdkPublishingProjects Include="$(MSBuildProjectFile)" AdditionalProperties="TargetFramework=%(_SdkTargetFramework.Identity)" />
+    </ItemGroup>
+    <MSBuild Projects="@(_SdkPublishingProjects)" BuildInParallel="$(BuildInParallel)" Targets="PublishAndReturnPublishedFilesWithTFM" Properties="NoBuild=true">
+      <Output TaskParameter="TargetOutputs" ItemName="PublishOutputs"/>
+    </MSBuild>
+    <ItemGroup>
+      <AllItemsFullPathWithTargetPath Include="@(PublishOutputs->'%(FullPath)')" TargetPath="$(SdkBaseDir)build\%(PublishOutputs.TargetFramework)\%(PublishOutputs.PublishPath)" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+  
+  <!-- Define target to allow referencing the outer build directly as source of copy-to-output-directory items -->
+  <Target
+    Name="GetCopyToOutputDirectoryItems"
+    Returns="@(AllItemsFullPathWithTargetPath)"
+    KeepDuplicateOutputs=" '$(MSBuildDisableGetCopyToOutputDirectoryItemsOptimization)' == '' "
+    DependsOnTargets="$(GetCopyToOutputDirectoryItemsDependsOn)"/>
+
+  <Target Name="PublishAndReturnPublishedFilesWithTFM" DependsOnTargets="Publish" Returns="@(PublishedFiles)">
+    <ItemGroup>
+      <PublishedFiles Include="$(PublishDir)**\*" TargetFramework="$(TargetFramework)" />
+      <PublishedFiles PublishPath="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetTargetPath" Returns="@(TargetItems)">
+    <ItemGroup>
+      <TargetItems Include="Sdks"/>
+    </ItemGroup>
+  </Target>
+
+</Project>

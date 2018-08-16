@@ -1,0 +1,31 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackPublishOutput</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <Target Name="PreparePublishToIntermediatePaths">
+    <PropertyGroup>
+      <PublishDir>$(IntermediateOutputPath)TmpPackPublish\</PublishDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_OldIntermediatePublishFiles Include="$(PublishDir)**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(_OldIntermediatePublishFiles)" ContinueOnError="true" />
+    <RemoveDir Directories="$(PublishDir)" ContinueOnError="true" Condition="Exists('$(PublishDir)')" />
+    <MakeDir Directories="$(PublishDir)" Condition="!Exists('$(PublishDir)')"/>
+  </Target>
+
+  <Target Name="PackPublishOutput" DependsOnTargets="PreparePublishToIntermediatePaths;Publish">
+    <ItemGroup>
+      <_IntermediatePublishFiles Include="$(PublishDir)**\*.*" />
+      <TfmSpecificPackageFile Include="@(_IntermediatePublishFiles)" PackagePath="build\$(TargetFramework)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

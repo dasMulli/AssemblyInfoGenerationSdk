@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.4.1" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.0.18" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SdkProject Include="..\..\src\DasMulli.AssemblyInfoGeneration.Sdk\DasMulli.AssemblyInfoGeneration.Sdk.csproj" />
+    <ProjectReference Include="@(SdkProject)" AdditionalProperties="ReferencingSdkLayout=true" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\TestAssets\**" Exclude="**\.vs\**;**\bin\**;**\obj\**" LinkBase="TestAssets\" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="IncludePackageVersionInMetadata" DependsOnTargets="GetNuGetPackageVersion" AfterTargets="GetAssemblyAttributes">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>NuGetPackageVersion</_Parameter1>
+        <_Parameter2>$(PackageVersion)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+</Project>
