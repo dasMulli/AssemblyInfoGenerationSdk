@@ -15,7 +15,7 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
 
             return asset == TestAsset.WebApplication
                 ? Path.Combine("bin", asset + ".dll")
-                : Path.Combine("bin", "Debug", asset + ".exe");
+                : Path.Combine("bin", "Release", asset + ".exe");
         }
     }
 }

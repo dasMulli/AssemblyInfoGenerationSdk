@@ -57,6 +57,7 @@ namespace DasMulli.AssemblyInfoGeneration.Tests
                 UseShellExecute = false
             };
             startInfo.EnvironmentVariables["MSBuildSDKsPath"] = Path.Combine(AppContext.BaseDirectory, "Sdks");
+            startInfo.EnvironmentVariables["Configuration"] = "Release";
             return startInfo;
         }
 
