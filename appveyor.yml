@@ -1,0 +1,13 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+before_build:
+- cmd:  >-
+    dotnet tool install --tool-path . nbgv
+
+    nbgv cloud
+
+    nuget restore
+build:
+  project: AssemblyInfoGenerationSdk.sln
+  publish_nuget: true
+  verbosity: minimal
