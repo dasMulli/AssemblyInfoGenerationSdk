@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Taken from MSBuild: https://github.com/Microsoft/msbuild/blob/master/src/Tasks/XmlPoke.cs
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
