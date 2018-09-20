@@ -1,5 +1,6 @@
 {
-  "version": "1.0.0-rc.{height}",
+  "version": "1.0",
+  "buildNumberOffset": -17,
   "publicReleaseRefSpec": [
     "^refs/heads/master$",
     "^refs/heads/v\\d+(?:\\.\\d+)?$"
